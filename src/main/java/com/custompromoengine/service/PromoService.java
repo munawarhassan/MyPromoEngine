@@ -26,13 +26,41 @@ import com.custompromoengine.rule.PromoThirdRule;
 @Service
 public class PromoService {
 	
+	@Autowired
+	private PromoRepository promoRepo;	
+	
+	@Autowired
+	private OrderRepository orderRepo;	
+	
+	private static Logger log = LoggerFactory.getLogger(PromoRepository.class);
+	
+	
+	
 	 public ResponseEntity<?> addPromo(Promo promo){ 
-		 return null;
+		 try {
+			 promoRepo.save(promo); 
+		 }catch (Exception ex) {			 
+			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));		 
+		 }
+		 
+		  return  ResponseEntity.ok("successfully added in DB");
 	 }
 	 
 	 
 		public ResponseEntity<?>  updatepromo(Promo updatedpromo){
-			return null;
+			try {			
+				Promo  promo = promoRepo.findByName(updatedpromo.getName());
+				
+				if(promo !=null) {
+					promoRepo.save(updatedpromo);
+					log.info(" Record Updated Successfully");
+					return ResponseEntity.ok("Record Updated Successfully");
+				}else {
+					return ResponseEntity.ok("Record Not Found");
+				}
+			} catch (Exception ex) {			
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));
+			}
 		}
 		
 		public Promo getpromo(String promoname){		

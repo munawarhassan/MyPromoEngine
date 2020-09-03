@@ -27,32 +27,36 @@ public class PromoController {
 	private static Logger log = LoggerFactory.getLogger(PromoController.class);
 	
 	@RequestMapping(path = "/default", method = RequestMethod.GET)
-	public String getDefaultMessage() {		
-
-		
-		return null;
+	public String getDefaultMessage() {
+		return	"Hello , I am ready for Promo serevice";
 	}	
 
 	@RequestMapping(path = "/addpromo", method = RequestMethod.POST)	
-    public ResponseEntity<?> addpromo(@RequestBody Promo promo){ 
-		return null;
+    public ResponseEntity<?> addpromo(@RequestBody Promo promo){
+		log.info("*Inside add Promo**");
+		return promoservice.addPromo(promo);
     }
 	
 	@RequestMapping(path = "/updatepromo", method = RequestMethod.PUT)	
-    public ResponseEntity<?> updatepromo(@RequestBody Promo promo){ 
-		return null;
+    public ResponseEntity<?> updatepromo(@RequestBody Promo promo){		
+		log.info("*Inside update Promo**");
+		return promoservice.updatepromo(promo);
     }
 	
 	@RequestMapping(path = "/getpromo/{promoname}", method = RequestMethod.GET)	
-    public Promo getpromo(@PathVariable String promoname) throws PromoEngineException{		
-
-		return null;
+    public Promo getpromo(@PathVariable String promoname) throws PromoEngineException{
+		Promo result = promoservice.getpromo(promoname);
+		if(null !=result) {
+			return result;
+		}else {
+			throw new PromoEngineException("No Data Found");
+		}
     }
 	
 	@RequestMapping(path = "/confirmorder", method = RequestMethod.POST)	
-	public ResponseEntity<?> confirmorder(@RequestBody Cart cart){ 		
-
-		return null;
+	public ResponseEntity<?> confirmorder(@RequestBody Cart cart){
+		log.info("*Inside confirmorder**");
+		return promoservice.confirmorder(cart);
     }
 
 }
