@@ -34,6 +34,29 @@ public class PromoService {
 	
 	private static Logger log = LoggerFactory.getLogger(PromoRepository.class);
 	
+	private List<ProductOrdered> productlistWithOffer = new ArrayList<ProductOrdered>();
+	private List<ProductOrdered> productlistWithOutOffer = new ArrayList<ProductOrdered>();
+	
+	
+	 public List<ProductOrdered> getProductlistWithOffer() {
+			return productlistWithOffer;
+		}
+
+
+		public void setProductlistWithOffer(List<ProductOrdered> productlistWithOffer) {
+			this.productlistWithOffer = productlistWithOffer;
+		}
+
+
+		public List<ProductOrdered> getProductlistWithOutOffer() {
+			return productlistWithOutOffer;
+		}
+
+
+		public void setProductlistWithOutOffer(List<ProductOrdered> productlistWithOutOffer) {
+			this.productlistWithOutOffer = productlistWithOutOffer;
+		}
+
 	
 	
 	 public ResponseEntity<?> addPromo(Promo promo){ 
