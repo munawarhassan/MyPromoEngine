@@ -110,7 +110,7 @@ public class PromoService {
 		 
 		 private void findProductsWithOffer(List<Promo> activePromoList,Cart cart) {				
 				 BaseRule br = null;
-				 List<ProductOrdered> tempProductList=  null;;	
+				 List<ProductOrdered> tempProductList=  null;	
 				 for(Promo promo : activePromoList) {	
 					 if(promo.getName().equalsIgnoreCase("PROMO_A")) {					 
 						  br = new PromoFirstRule();
