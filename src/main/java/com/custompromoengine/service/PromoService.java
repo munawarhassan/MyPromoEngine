@@ -192,6 +192,8 @@ public class PromoService {
 		
 		
 		private void findProductsWithOffer(List<Promo> activePromoList,Cart cart) {
+			productlistWithOffer.clear();
+			productlistWithOutOffer.clear();
 			 BaseRule br = null;
 			 List<ProductOrdered> tempProductList=  null;;	
 			 for(Promo promo : activePromoList) {	
