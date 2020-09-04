@@ -94,11 +94,59 @@ public class PromoService {
 
 
 		 public ResponseEntity<?> confirmorder(Cart cart) {
+			 try {
+			Double price = 0.0;
+			 List<Promo>  promolist= promoRepo.findAll();
+			 promolist.removeIf(promo -> (!promo.isActive()));		 
+			
+			 BaseRule br = null;
+			 List<ProductOrdered> tempProductList=  null;;	
+			 for(Promo promo : promolist) {	
+				 if(promo.getName().equalsIgnoreCase("PROMO_A")) {					 
+					  br = new PromoFirstRule();
+					  tempProductList= new ArrayList<ProductOrdered>();
+					  tempProductList.addAll(cart.getProducts());					 
+					  tempProductList.removeIf(product -> (!(product.getSkuId().equalsIgnoreCase("A"))));						  
+						  br.evaluateCondition(tempProductList.get(0),productlistWithOffer,productlistWithOutOffer);					 
+					 		
+				 }else if(promo.getName().equalsIgnoreCase("PROMO_B")) {					 
+					  br = new PromoSecondRule();	
+					  tempProductList= new ArrayList<ProductOrdered>();
+					  tempProductList.addAll(cart.getProducts());					  
+					  tempProductList.removeIf(product -> (!(product.getSkuId().equalsIgnoreCase("B"))));						  
+						  br.evaluateCondition(tempProductList.get(0),productlistWithOffer,productlistWithOutOffer);	
+				 }else if(promo.getName().equalsIgnoreCase("PROMO_CD")) {					 
+					  br = new PromoThirdRule();	
+					  tempProductList= new ArrayList<ProductOrdered>();
+					  tempProductList.addAll(cart.getProducts());
+						
+					  
+					  tempProductList.removeIf(product -> (product.getSkuId().equalsIgnoreCase("A")));
+					  tempProductList.removeIf(product -> (product.getSkuId().equalsIgnoreCase("B")));
+					  br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
+				 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {					 
+					  br = new PromoForthRule();	
+					  tempProductList= new ArrayList<ProductOrdered>();
+					  tempProductList.addAll(cart.getProducts());	
+					  br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
+				 }
+				 
+			 }
+			
 			 
-			 return null;
+			 for(ProductOrdered pruductordered : cart.getProducts()) {
+				 if(!(pruductordered.isOffervailable())) {
+					 productlistWithOutOffer.add(pruductordered);
+				 }
+			 }
+					 
+			 return  ResponseEntity.ok(cart.getProducts());
+			 }catch (Exception ex) {			
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));
+				}
 		}	
 		
 		
-		
+	
 			 
 }
