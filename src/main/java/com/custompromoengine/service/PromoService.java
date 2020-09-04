@@ -116,7 +116,7 @@ public class PromoService {
 			 orderRepo.save(myorder);			 
 			 return  ResponseEntity.status(HttpStatus.OK).body(myorder);
 			 }catch (Exception ex) {			
-					return null;
+				 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));
 				}
 		}	
 		
