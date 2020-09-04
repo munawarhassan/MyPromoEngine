@@ -26,6 +26,8 @@ import com.custompromoengine.rule.PromoThirdRule;
 @Service
 public class PromoService {
 	
+
+	
 	@Autowired
 	private PromoRepository promoRepo;	
 	
@@ -104,15 +106,17 @@ public class PromoService {
 			
 			 price = price + calculaProductpriceWithOffer(promolist, productlistWithOffer);
 			 price = price + calculaProductpriceWithoutOffer(productlistWithOutOffer);
-			
+			 FinalOrder myorder = new FinalOrder();
 			 String description = "";
 			 for(ProductOrdered productOrdered : cart.getProducts()) {
 				 description = description +"  "+  productOrdered.getQuantity() + " "+ productOrdered.getName() + ", ";
 			 }
-						 
-			 return  ResponseEntity.ok(cart.getProducts());
+			 myorder.setDescription(description);
+			 myorder.setTotalprice(price);
+			 orderRepo.save(myorder);			 
+			 return  ResponseEntity.status(HttpStatus.OK).body(myorder);
 			 }catch (Exception ex) {			
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));
+					return null;
 				}
 		}	
 		
@@ -178,7 +182,8 @@ public class PromoService {
 		}
 		
 		private Double calculaProductpriceWithoutOffer(List<ProductOrdered> productlistWithOutOffer) {
-			Double price = 0.0;			
+			Double price = 0.0;
+			
 			 for(ProductOrdered pruductordered : productlistWithOutOffer) {
 				 price = price +  pruductordered.getQuantity() * pruductordered.getPrice() ;
 			 }
@@ -206,9 +211,9 @@ public class PromoService {
 				 }else if(promo.getName().equalsIgnoreCase("PROMO_CD")) {					 
 					  br = new PromoThirdRule();	
 					  tempProductList= new ArrayList<ProductOrdered>();
-					  tempProductList.addAll(cart.getProducts());
+					  tempProductList.addAll(cart.getProducts());					  
 					  tempProductList.removeIf(product -> ((!(product.getSkuId().equalsIgnoreCase("C"))) &&  (!(product.getSkuId().equalsIgnoreCase("D")))));	
-					  br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
+					   br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
 				 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {					 
 					  br = new PromoForthRule();	
 					  tempProductList= new ArrayList<ProductOrdered>();
@@ -229,5 +234,4 @@ public class PromoService {
 			 }
 			 
 		}
-			 
 }
