@@ -16,14 +16,14 @@ public class PromoForthRule implements BaseRule{
 	@Override
 	public void evaluateCondition(List<ProductOrdered> productOrdered_list, List<ProductOrdered> productlistWithOffer,
 			List<ProductOrdered> productlistWithOutOffer) {
-		// TODO Auto-generated method stub
+		productlistWithOffer.addAll(productOrdered_list);
 		
 	}
 
 	@Override
 	public Double calculateOfferedPrice(ProductOrdered productOrdered) {
-		// TODO Auto-generated method stub
-		return null;
+		Double price = ( productOrdered.getQuantity() * productOrdered.getPrice()) * 0.9;
+		return price;
 	}
 
 }
