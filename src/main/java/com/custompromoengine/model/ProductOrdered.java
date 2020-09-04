@@ -7,15 +7,7 @@ public class ProductOrdered {
     private String description;
     private int quantity;
 	private Double price;
-	private boolean offervailable;
 	
-  
-	public boolean isOffervailable() {
-		return offervailable;
-	}
-	public void setOffervailable(boolean offervailable) {
-		this.offervailable = offervailable;
-	}
 	public String getSkuId() {
 		return skuId;
 	}
@@ -26,16 +18,7 @@ public class ProductOrdered {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public ProductOrdered(String skuId, String name, String description, int quantity, Double price,
-			boolean offervailable) {
-		super();
-		this.skuId = skuId;
-		this.name = name;
-		this.description = description;
-		this.quantity = quantity;
-		this.price = price;
-		this.offervailable = offervailable;
-	}
+	
 	public void setSkuId(String skuId) {
 		this.skuId = skuId;
 	}

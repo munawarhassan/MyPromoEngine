@@ -39,6 +39,7 @@ public class PromoService {
 	 public ResponseEntity<?> addPromo(Promo promo){ 
 		 try {
 			 promoRepo.save(promo); 
+			 log.info(" Record Updated Successfully");
 		 }catch (Exception ex) {			 
 			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));		 
 		 }
