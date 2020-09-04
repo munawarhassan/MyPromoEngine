@@ -38,31 +38,9 @@ public class PromoService {
 	private List<ProductOrdered> productlistWithOutOffer = new ArrayList<ProductOrdered>();
 	
 	
-	 public List<ProductOrdered> getProductlistWithOffer() {
-			return productlistWithOffer;
-		}
-
-
-		public void setProductlistWithOffer(List<ProductOrdered> productlistWithOffer) {
-			this.productlistWithOffer = productlistWithOffer;
-		}
-
-
-		public List<ProductOrdered> getProductlistWithOutOffer() {
-			return productlistWithOutOffer;
-		}
-
-
-		public void setProductlistWithOutOffer(List<ProductOrdered> productlistWithOutOffer) {
-			this.productlistWithOutOffer = productlistWithOutOffer;
-		}
-
-	
-	
 	 public ResponseEntity<?> addPromo(Promo promo){ 
 		 try {
 			 promoRepo.save(promo); 
-			 log.info(" Record Updated Successfully");
 		 }catch (Exception ex) {			 
 			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));		 
 		 }
@@ -91,68 +69,163 @@ public class PromoService {
 			Promo  promo = promoRepo.findByName(promoname);
 			return promo;
 		}
+		
+		
+		
+	 
+
+		 public List<ProductOrdered> getProductlistWithOffer() {
+			return productlistWithOffer;
+		}
+
+
+		public void setProductlistWithOffer(List<ProductOrdered> productlistWithOffer) {
+			this.productlistWithOffer = productlistWithOffer;
+		}
+
+
+		public List<ProductOrdered> getProductlistWithOutOffer() {
+			return productlistWithOutOffer;
+		}
+
+
+		public void setProductlistWithOutOffer(List<ProductOrdered> productlistWithOutOffer) {
+			this.productlistWithOutOffer = productlistWithOutOffer;
+		}
 
 
 		 public ResponseEntity<?> confirmorder(Cart cart) {
-				Double price = 0.0;
-				
-				try{List<Promo>  promolist= promoRepo.findAll();
-				 promolist.removeIf(promo -> (!promo.isActive()));		 
-				 findProductsWithOffer(promolist,cart);
-				 findProductsWithNoOffer(promolist,cart);
-				 
-				 return  ResponseEntity.ok(cart.getProducts());
-				 }catch (Exception ex) {			
-						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));
-					}
-		}
-		 
-		 
-		 private void findProductsWithOffer(List<Promo> activePromoList,Cart cart) {				
-				 BaseRule br = null;
-				 List<ProductOrdered> tempProductList=  null;	
-				 for(Promo promo : activePromoList) {	
-					 if(promo.getName().equalsIgnoreCase("PROMO_A")) {					 
-						  br = new PromoFirstRule();
-						  tempProductList= new ArrayList<ProductOrdered>();
-						  tempProductList.addAll(cart.getProducts());					 
-						  tempProductList.removeIf(product -> (!(product.getSkuId().equalsIgnoreCase("A"))));						  
-							  br.evaluateCondition(tempProductList.get(0),productlistWithOffer,productlistWithOutOffer);					 
-						 		
-					 }else if(promo.getName().equalsIgnoreCase("PROMO_B")) {					 
-						  br = new PromoSecondRule();	
-						  tempProductList= new ArrayList<ProductOrdered>();
-						  tempProductList.addAll(cart.getProducts());					  
-						  tempProductList.removeIf(product -> (!(product.getSkuId().equalsIgnoreCase("B"))));						  
-							  br.evaluateCondition(tempProductList.get(0),productlistWithOffer,productlistWithOutOffer);	
-					 }else if(promo.getName().equalsIgnoreCase("PROMO_CD")) {					 
-						  br = new PromoThirdRule();	
-						  tempProductList= new ArrayList<ProductOrdered>();
-						  tempProductList.addAll(cart.getProducts());
-						  tempProductList.removeIf(product -> ((!(product.getSkuId().equalsIgnoreCase("C"))) &&  (!(product.getSkuId().equalsIgnoreCase("D")))));
-						  br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
-					 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {					 
-						  br = new PromoForthRule();	
-						  tempProductList= new ArrayList<ProductOrdered>();
-						  tempProductList.addAll(cart.getProducts());	
-						  br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
-					 }
-					 
-				 }
-			 
-			 
-			}
+			 try {
+			Double price = 0.0;
+			 List<Promo>  promolist= promoRepo.findAll();
+			 promolist.removeIf(promo -> (!promo.isActive()));		 
+			 findProductsWithOffer(promolist,cart);
+			 findProductsWithNoOffer(promolist,cart);
 			
-			private void findProductsWithNoOffer(List<Promo> activePromoList,Cart cart) {
-				 for(ProductOrdered pruductordered : cart.getProducts()) {
-					 if(!(pruductordered.isOffervailable())) {
-						 productlistWithOutOffer.add(pruductordered);
-					 }
+			 price = price + calculaProductpriceWithOffer(promolist, productlistWithOffer);
+			 price = price + calculaProductpriceWithoutOffer(productlistWithOutOffer);
+			
+			 String description = "";
+			 for(ProductOrdered productOrdered : cart.getProducts()) {
+				 description = description +"  "+  productOrdered.getQuantity() + " "+ productOrdered.getName() + ", ";
+			 }
+						 
+			 return  ResponseEntity.ok(cart.getProducts());
+			 }catch (Exception ex) {			
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));
+				}
+		}	
+		
+		
+		private Double calculaProductpriceWithOffer( List<Promo> activePromolist, List<ProductOrdered> productlistWithOffer) {
+			Double price = 0.0;
+			 BaseRule br = null;
+			 for(ProductOrdered pruductordered : productlistWithOffer) {
+				 if((pruductordered.getSkuId().equalsIgnoreCase("A"))){
+					 br = new PromoFirstRule();					
+					 for(Promo promo : activePromolist) {
+						 if(promo.getName().equalsIgnoreCase("PROMO_A")) {	
+							 price = price + br.calculateOfferedPrice(pruductordered);
+							 break;
+						 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {	
+							 br = new PromoForthRule();	
+							 price = price + br.calculateOfferedPrice(pruductordered);
+							 break;
+						 }
+					 }					 
+				 }else if((pruductordered.getSkuId().equalsIgnoreCase("B"))){
+					 br = new PromoSecondRule();
+					 for(Promo promo : activePromolist) {
+						 if(promo.getName().equalsIgnoreCase("PROMO_B")) {	
+							 price = price+ br.calculateOfferedPrice(pruductordered);
+							 break;
+						 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {	
+							 br = new PromoForthRule();	
+							 price = price + br.calculateOfferedPrice(pruductordered);
+							 break;
+						 }
+					 }	
+					
+				 }else if((pruductordered.getSkuId().equalsIgnoreCase("C"))){
+					 br = new PromoThirdRule(); 
+					 for(Promo promo : activePromolist) {
+						 if(promo.getName().equalsIgnoreCase("PROMO_CD")) {	
+							 price = price+ br.calculateOfferedPrice(pruductordered);
+							 break;
+						 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {	
+							 br = new PromoForthRule();	
+							 price = price+ br.calculateOfferedPrice(pruductordered);
+							 break;
+						 }
+					 }	
+				 }else if((pruductordered.getSkuId().equalsIgnoreCase("D"))){
+					 br = new PromoThirdRule(); 
+					 for(Promo promo : activePromolist) {
+						 if(promo.getName().equalsIgnoreCase("PROMO_CD")) {	
+							 price = price+  br.calculateOfferedPrice(pruductordered);
+							 break;
+						 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {	
+							 br = new PromoForthRule();	
+							 price = price + br.calculateOfferedPrice(pruductordered);
+							 break;
+						 }
+					 }	
 				 }
 				 
-			}
+			 }
+			return price;
+			
+		}
+		
+		private Double calculaProductpriceWithoutOffer(List<ProductOrdered> productlistWithOutOffer) {
+			return null;
+		}
 		
 		
-	
+		private void findProductsWithOffer(List<Promo> activePromoList,Cart cart) {
+			productlistWithOffer.clear();
+			productlistWithOutOffer.clear();
+			 BaseRule br = null;
+			 List<ProductOrdered> tempProductList=  null;;	
+			 for(Promo promo : activePromoList) {	
+				 if(promo.getName().equalsIgnoreCase("PROMO_A")) {					 
+					  br = new PromoFirstRule();
+					  tempProductList= new ArrayList<ProductOrdered>();
+					  tempProductList.addAll(cart.getProducts());					 
+					  tempProductList.removeIf(product -> (!(product.getSkuId().equalsIgnoreCase("A"))));						  
+						  br.evaluateCondition(tempProductList.get(0),productlistWithOffer,productlistWithOutOffer);					 
+					 		
+				 }else if(promo.getName().equalsIgnoreCase("PROMO_B")) {					 
+					  br = new PromoSecondRule();	
+					  tempProductList= new ArrayList<ProductOrdered>();
+					  tempProductList.addAll(cart.getProducts());					  
+					  tempProductList.removeIf(product -> (!(product.getSkuId().equalsIgnoreCase("B"))));						  
+						  br.evaluateCondition(tempProductList.get(0),productlistWithOffer,productlistWithOutOffer);	
+				 }else if(promo.getName().equalsIgnoreCase("PROMO_CD")) {					 
+					  br = new PromoThirdRule();	
+					  tempProductList= new ArrayList<ProductOrdered>();
+					  tempProductList.addAll(cart.getProducts());
+					  tempProductList.removeIf(product -> ((!(product.getSkuId().equalsIgnoreCase("C"))) &&  (!(product.getSkuId().equalsIgnoreCase("D")))));	
+					  br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
+				 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {					 
+					  br = new PromoForthRule();	
+					  tempProductList= new ArrayList<ProductOrdered>();
+					  tempProductList.addAll(cart.getProducts());	
+					  br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
+				 }
+				 
+			 }
+		 
+		 
+		}
+		
+		private void findProductsWithNoOffer(List<Promo> activePromoList,Cart cart) {
+			 for(ProductOrdered pruductordered : cart.getProducts()) {
+				 if(!(pruductordered.isOffervailable())) {
+					 productlistWithOutOffer.add(pruductordered);
+				 }
+			 }
+			 
+		}
 			 
 }
