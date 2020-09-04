@@ -17,7 +17,6 @@ public class PromoThirdRule implements BaseRule{
 	public void evaluateCondition(List<ProductOrdered> productOrdered_list, List<ProductOrdered> productlistWithOffer,
 			List<ProductOrdered> productlistWithOutOffer) {
 
-	 	
 		if (productOrdered_list.size()==1) {
 			productlistWithOutOffer.addAll(productOrdered_list);
 		}else if (productOrdered_list.size()==2) {
@@ -60,8 +59,13 @@ public class PromoThirdRule implements BaseRule{
 				tempProductOffered_C.setQuantity(quantity_D);
 				productlistWithOffer.add(tempProductOffered_C);		
 				productlistWithOffer.add(tempProductOffered_D);
-				tempProductNotOffered_C.setQuantity(quantity_D - quantity_C);
+				tempProductNotOffered_C.setQuantity(quantity_C - quantity_D);
 				productlistWithOutOffer.add(tempProductNotOffered_C);
+			}else {
+				tempProductOffered_C.setQuantity(quantity_C);
+				tempProductOffered_D.setQuantity(quantity_D);
+				productlistWithOffer.add(tempProductOffered_C);
+				productlistWithOffer.add(tempProductOffered_D);
 				
 			}
 			
