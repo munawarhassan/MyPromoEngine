@@ -65,7 +65,8 @@ public class PromoService {
 		}
 		
 		public Promo getpromo(String promoname){		
-			return null;
+			Promo  promo = promoRepo.findByName(promoname);
+			return promo;
 		}
 
 
