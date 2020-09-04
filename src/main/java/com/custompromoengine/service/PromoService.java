@@ -37,6 +37,17 @@ public class PromoService {
 	private List<ProductOrdered> productlistWithOffer = new ArrayList<ProductOrdered>();
 	private List<ProductOrdered> productlistWithOutOffer = new ArrayList<ProductOrdered>();
 	
+	private  List<Promo>  defaultPromolist =  new ArrayList<Promo>();
+	
+	 public List<Promo> getDefaultPromolist() {
+		return defaultPromolist;
+	}
+
+
+	public void setDefaultPromolist(List<Promo> defaultPromolist) {
+		this.defaultPromolist = defaultPromolist;
+	}
+
 	
 	 public ResponseEntity<?> addPromo(Promo promo){ 
 		 try {
@@ -94,10 +105,16 @@ public class PromoService {
 		}
 
 
-		 public ResponseEntity<?> confirmorder(Cart cart) {
+		// public ResponseEntity<?> confirmorder(Cart cart) {
+		 public FinalOrder confirmorder(Cart cart) throws PromoEngineException{
 			 try {
 			Double price = 0.0;
 			 List<Promo>  promolist= promoRepo.findAll();
+			 if(promolist == null || promolist.size()==0) { // Added for Junit Testing
+				 promolist = this.getDefaultPromolist();
+				 
+			 }
+			 
 			 promolist.removeIf(promo -> (!promo.isActive()));		 
 			 findProductsWithOffer(promolist,cart);
 			 findProductsWithNoOffer(promolist,cart);
@@ -112,9 +129,11 @@ public class PromoService {
 			 myorder.setDescription(description);
 			 myorder.setTotalprice(price);
 			 orderRepo.save(myorder);			 
-			 return  ResponseEntity.status(HttpStatus.OK).body(myorder);
+			// return  ResponseEntity.status(HttpStatus.OK).body(myorder);
+			 return myorder;
 			 }catch (Exception ex) {			
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));
+					//return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PromoEngineException(ex.getMessage()));
+					throw new PromoEngineException(ex.getMessage());
 				}
 		}	
 		

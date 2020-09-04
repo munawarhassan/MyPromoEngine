@@ -53,10 +53,13 @@ public class PromoController {
 		}
     }
 	
-	@RequestMapping(path = "/confirmorder", method = RequestMethod.POST)	
-	public ResponseEntity<?> confirmorder(@RequestBody Cart cart){
+	//public ResponseEntity<?> confirmorder(@RequestBody Cart cart){
+	@RequestMapping(path = "/confirmorder", method = RequestMethod.POST)
+	public FinalOrder confirmorder(@RequestBody Cart cart) throws PromoEngineException{ 
+		
 		log.info("*Inside confirmorder**");
 		return promoservice.confirmorder(cart);
+		
+		
     }
-
 }
