@@ -49,14 +49,17 @@ public class PromoThirdRule implements BaseRule{
 			}
 			if(quantity_C < quantity_D) {				
 				tempProductOffered_C.setQuantity(quantity_C);
+				tempProductOffered_D.setQuantity(quantity_C);				
 				productlistWithOffer.add(tempProductOffered_C);
-				tempProductOffered_D.setQuantity(quantity_C);
+				productlistWithOffer.add(tempProductOffered_D);
 				tempProductNotOffered_D.setQuantity(quantity_D - quantity_C);
 				productlistWithOutOffer.add(tempProductNotOffered_D);
 				
 			}else if(quantity_C > quantity_D) {				
 				tempProductOffered_D.setQuantity(quantity_D);
-				productlistWithOffer.add(tempProductOffered_D);				
+				tempProductOffered_C.setQuantity(quantity_D);
+				productlistWithOffer.add(tempProductOffered_C);		
+				productlistWithOffer.add(tempProductOffered_D);
 				tempProductNotOffered_C.setQuantity(quantity_D - quantity_C);
 				productlistWithOutOffer.add(tempProductNotOffered_C);
 				
