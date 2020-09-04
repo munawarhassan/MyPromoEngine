@@ -129,8 +129,7 @@ public class PromoService {
 						  br = new PromoThirdRule();	
 						  tempProductList= new ArrayList<ProductOrdered>();
 						  tempProductList.addAll(cart.getProducts());
-						  tempProductList.removeIf(product -> (product.getSkuId().equalsIgnoreCase("A")));
-						  tempProductList.removeIf(product -> (product.getSkuId().equalsIgnoreCase("B")));
+						  tempProductList.removeIf(product -> ((!(product.getSkuId().equalsIgnoreCase("C"))) &&  (!(product.getSkuId().equalsIgnoreCase("D")))));
 						  br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
 					 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {					 
 						  br = new PromoForthRule();	
