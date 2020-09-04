@@ -178,13 +178,15 @@ public class PromoService {
 		}
 		
 		private Double calculaProductpriceWithoutOffer(List<ProductOrdered> productlistWithOutOffer) {
-			return null;
+			Double price = 0.0;			
+			 for(ProductOrdered pruductordered : productlistWithOutOffer) {
+				 price = price +  pruductordered.getQuantity() * pruductordered.getPrice() ;
+			 }
+			 return price;
 		}
 		
 		
 		private void findProductsWithOffer(List<Promo> activePromoList,Cart cart) {
-			productlistWithOffer.clear();
-			productlistWithOutOffer.clear();
 			 BaseRule br = null;
 			 List<ProductOrdered> tempProductList=  null;;	
 			 for(Promo promo : activePromoList) {	
