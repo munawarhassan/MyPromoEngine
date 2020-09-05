@@ -57,9 +57,15 @@ public class PromoEngineApplicationTests {
 		PROMO_CD.setActive(true);
 		PROMO_CD.setSkuList(new ArrayList<String>(Arrays.asList("C","D")));
 		
+		Promo PROMO_ALL= new Promo();
+		PROMO_ALL.setName("PROMO_ALL");
+		PROMO_ALL.setActive(false);
+		PROMO_ALL.setSkuList(new ArrayList<String>(Arrays.asList("A","B","C","D")));
+		
 		promolist_temp.add(PROMO_A);
 		promolist_temp.add(PROMO_B);
 		promolist_temp.add(PROMO_CD);
+		promolist_temp.add(PROMO_ALL);
 
 		this.setPromolist(promolist_temp);
 		

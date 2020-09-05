@@ -15,6 +15,7 @@ import com.custompromoengine.model.Cart;
 import com.custompromoengine.model.FinalOrder;
 import com.custompromoengine.model.ProductOrdered;
 import com.custompromoengine.model.Promo;
+import com.custompromoengine.model.PromoEngineConfig;
 import com.custompromoengine.repo.OrderRepository;
 import com.custompromoengine.repo.PromoRepository;
 import com.custompromoengine.rule.BaseRule;
@@ -31,6 +32,9 @@ public class PromoService {
 	
 	@Autowired
 	private OrderRepository orderRepo;	
+	
+	
+	@Autowired private PromoEngineConfig promoEngineConfig;	 
 	
 	private static Logger log = LoggerFactory.getLogger(PromoRepository.class);
 	
@@ -209,7 +213,7 @@ public class PromoService {
 			 List<ProductOrdered> tempProductList=  null;;	
 			 for(Promo promo : activePromoList) {	
 				 List<String> skuids = promo.getSkuList();
-				 if(promo.getName().equalsIgnoreCase("PROMO_A")) {					 
+				 if(promo.getName().equalsIgnoreCase(promoEngineConfig.getFirstpromo())) {					 
 					  br = new PromoFirstRule();
 					  tempProductList= new ArrayList<ProductOrdered>();
 					  tempProductList.addAll(cart.getProducts());
@@ -219,7 +223,7 @@ public class PromoService {
 					     if(tempProductList.size()>0) {
 						  br.evaluateCondition(tempProductList.get(0),productlistWithOffer,productlistWithOutOffer);					 
 					     }
-				 }else if(promo.getName().equalsIgnoreCase("PROMO_B")) {					 
+				 }else if(promo.getName().equalsIgnoreCase(promoEngineConfig.getSecondpromo())) {					 
 					  br = new PromoSecondRule();	
 					  tempProductList= new ArrayList<ProductOrdered>();
 					  tempProductList.addAll(cart.getProducts());	
@@ -230,7 +234,7 @@ public class PromoService {
 						  br.evaluateCondition(tempProductList.get(0),productlistWithOffer,productlistWithOutOffer); 
 					  }
 					   	
-				 }else if(promo.getName().equalsIgnoreCase("PROMO_CD")) {					 
+				 }else if(promo.getName().equalsIgnoreCase(promoEngineConfig.getThirdpromo())) {					 
 					  br = new PromoThirdRule();	
 					  tempProductList= new ArrayList<ProductOrdered>();
 					  tempProductList.addAll(cart.getProducts());					  
@@ -239,7 +243,7 @@ public class PromoService {
 					  if(tempProductList.size()>0) {
 					  br.evaluateCondition(tempProductList,productlistWithOffer,productlistWithOutOffer);
 					  }
-				 }else if(promo.getName().equalsIgnoreCase("PROMO_ALL")) {					 
+				 }else if(promo.getName().equalsIgnoreCase(promoEngineConfig.getForthpromo())) {					 
 					  br = new PromoForthRule();	
 					  tempProductList= new ArrayList<ProductOrdered>();
 					  tempProductList.addAll(cart.getProducts());
