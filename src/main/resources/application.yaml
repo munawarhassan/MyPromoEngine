@@ -31,4 +31,9 @@ management:
       exposure:
         include: '*'
         
+firstpromo: PROMO_A
+secondpromo: PROMO_B
+thirdpromo: PROMO_CD
+forthpromo: PROMO_ALL
+
 
