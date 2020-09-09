@@ -30,11 +30,6 @@ public class PromoController {
 
 	private static Logger log = LoggerFactory.getLogger(PromoController.class);
 
-	@RequestMapping(path = "/default", method = RequestMethod.GET)
-	public String getDefaultMessage() {
-		return "Hello , I am ready for Promo serevice";
-	}
-
 	@RequestMapping(path = "/addpromo", method = RequestMethod.POST)
 	public ResponseEntity<?> addpromo(@RequestBody Promo promo) {
 		log.info("*Inside add Promo**");
@@ -58,7 +53,7 @@ public class PromoController {
 	}
 
 	@RequestMapping(path = "/confirmorder", method = RequestMethod.POST)
-	public FinalOrder confirmorder(@RequestBody Cart cart) throws PromoEngineException {
+	public Double confirmorder(@RequestBody Cart cart) throws PromoEngineException {
 
 		log.info("*Inside confirmorder**");
 		return promoservice.confirmorder(cart);

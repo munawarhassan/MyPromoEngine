@@ -89,7 +89,7 @@ public class PromoService {
 	 * @return
 	 * @throws PromoEngineException
 	 */
-	public FinalOrder confirmorder(Cart cart) throws PromoEngineException {
+	public Double confirmorder(Cart cart) throws PromoEngineException {
 		try {
 			Double price = 0.0;
 			List<Promo> promolist = promoRepo.findAll();
@@ -105,7 +105,8 @@ public class PromoService {
 				price = price + calculaProductpriceWithOffer(promolist, productlistWithOffer);
 			}
 			if (productlistWithOutOffer.size() > 0) {
-				price = price + calculaProductpriceWithoutOffer(productlistWithOutOffer);
+				BaseRule rule = new RuleEngine();
+				price = price + rule.calculaProductpriceWithoutOffer(productlistWithOutOffer);
 			}
 
 			FinalOrder myorder = new FinalOrder();
@@ -116,7 +117,7 @@ public class PromoService {
 			myorder.setDescription(description);
 			myorder.setTotalprice(price);
 			orderRepo.save(myorder);
-			return myorder;
+			return price;
 		} catch (Exception ex) {
 			throw new PromoEngineException(ex.getMessage());
 		}
@@ -134,23 +135,7 @@ public class PromoService {
 
 	}
 
-	/**
-	 * @param productlistWithOutOffer
-	 * @return
-	 */
-	private Double calculaProductpriceWithoutOffer(List<ProductOrdered> productlistWithOutOffer) {
-
-		Double price = 0.0;
-		ArrayList<Double> tempPriceList = new ArrayList<>();
-
-		productlistWithOutOffer.forEach(product -> {
-			tempPriceList.add(product.getQuantity() * product.getPrice());
-		});
-
-		price = tempPriceList.stream().filter(i -> i > tempPriceList.size()).mapToDouble(i -> i).sum();
-		return price;
-	}
-
+	
 	/**
 	 * @param activePromoList
 	 * @param cart

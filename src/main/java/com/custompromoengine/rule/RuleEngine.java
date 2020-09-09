@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.custompromoengine.model.ProductOrdered;
 import com.custompromoengine.model.Promo;
 
@@ -12,9 +14,29 @@ import com.custompromoengine.model.Promo;
  * @author SKHassan
  *
  */
-
+@Component
 public class RuleEngine implements BaseRule {
+	
+	/* (non-Javadoc)
+	 * @see com.custompromoengine.rule.BaseRule#calculaProductpriceWithoutOffer(java.util.List)
+	 */
+	@Override
+	public Double calculaProductpriceWithoutOffer(List<ProductOrdered> productlistWithOutOffer) {
 
+		Double price = 0.0;
+		ArrayList<Double> tempPriceList = new ArrayList<>();
+
+		productlistWithOutOffer.forEach(product -> {
+			tempPriceList.add(product.getQuantity() * product.getPrice());
+		});
+
+		price = tempPriceList.stream().filter(i -> i > tempPriceList.size()).mapToDouble(i -> i).sum();
+		return price;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.custompromoengine.rule.BaseRule#calculaProductpriceWithOffer(java.util.List, java.util.List)
+	 */
 	@Override
 	public Double calculaProductpriceWithOffer(List<Promo> activePromolist, List<ProductOrdered> productlistWithOffer) {
 		HashMap<String, ProductOrdered> productOrderedmap = new HashMap<>();
@@ -81,7 +103,7 @@ public class RuleEngine implements BaseRule {
 			List<ProductOrdered> productlistWithOffer, List<ProductOrdered> productlistWithOutOffer) {
 		HashMap<String, ProductOrdered> productOrderedmap = new HashMap<>();
 
-		productOrdered_list.forEach(product -> {
+		productOrdered_list.stream().forEach(product -> {
 			if (product.isOffervailable())
 				productOrderedmap.put(product.getSkuId(), product);
 		});

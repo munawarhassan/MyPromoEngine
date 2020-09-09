@@ -16,5 +16,5 @@ public   interface BaseRule {
 			List<ProductOrdered> productlistWithOffer,List<ProductOrdered> productlistWithOutOffer);
 	
 	public Double calculaProductpriceWithOffer( List<Promo> activePromolist, List<ProductOrdered> productlistWithOffer) ;
-
+	public Double calculaProductpriceWithoutOffer(List<ProductOrdered> productlistWithOutOffer);
 }
