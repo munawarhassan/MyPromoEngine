@@ -1,7 +1,14 @@
 package com.custompromoengine.model;
 
+import java.util.List;
+
 import javax.persistence.*;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 @Entity
 public class FinalOrder {
 
@@ -15,32 +22,4 @@ public class FinalOrder {
     
     @Column(name = "total_price") 
     private Double totalprice;
-   
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Double getTotalprice() {
-		return totalprice;
-	}
-
-	public void setTotalprice(Double totalprice) {
-		this.totalprice = totalprice;
-	}
-    
-
-   
 }

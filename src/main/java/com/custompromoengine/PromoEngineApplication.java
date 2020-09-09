@@ -8,6 +8,11 @@ import com.custompromoengine.model.PromoEngineConfig;
 
 @EnableConfigurationProperties(PromoEngineConfig.class)
 @SpringBootApplication
+/**
+ * @author SKHassan
+ *
+ */
+
 public class PromoEngineApplication {
 
 	public static void main(String[] args) {
