@@ -42,15 +42,7 @@ public class PromoController {
 		return promoservice.updatepromo(promo);
 	}
 
-	@RequestMapping(path = "/getpromo/{promoname}", method = RequestMethod.GET)
-	public Promo getpromo(@PathVariable String promoname) throws PromoEngineException {
-		Promo result = promoservice.getpromo(promoname);
-		if (null != result) {
-			return result;
-		} else {
-			throw new PromoEngineException("No Data Found");
-		}
-	}
+	
 
 	@RequestMapping(path = "/confirmorder", method = RequestMethod.POST)
 	public Double confirmorder(@RequestBody Cart cart) throws PromoEngineException {

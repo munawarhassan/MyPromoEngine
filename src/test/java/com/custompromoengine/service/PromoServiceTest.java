@@ -103,11 +103,11 @@ public class PromoServiceTest {
 		assertEquals(new Double(280.00),price);
 	}
 	
-	//@Test
+	@Test
 	public void confirmorder4() {
-		ProductOrdered  Product_A = new ProductOrdered("A","pen", "ink pen", 3, 50.00,true);
+		ProductOrdered  Product_A = new ProductOrdered("A","pen", "ink pen", 5, 50.00,true);
 		ProductOrdered  Product_B = new ProductOrdered("B","exercise copy", "camlin exercise copy", 5, 30.00,true);		
-		ProductOrdered  Product_C = new ProductOrdered("C","eraser", "camlin eraser", 1, 20.00,true);
+		ProductOrdered  Product_C = new ProductOrdered("C","eraser", "camlin eraser", 2, 20.00,true);
 		ProductOrdered  Product_D = new ProductOrdered("D","ruler", "camlin ruler", 1, 15.00,true);
 		ArrayList<ProductOrdered> listOfProducts = new ArrayList<ProductOrdered>();		
 		listOfProducts.add(Product_A);
@@ -118,7 +118,7 @@ public class PromoServiceTest {
 		cart.setProducts(listOfProducts);		
 		promoservice.setDefaultPromolist(this.getPromolist());
 		Double price =  promoservice.confirmorder(cart);
-		assertEquals(new Double(301.50),price);
+		assertEquals(new Double(400.00),price);
 	}
 	
 	
